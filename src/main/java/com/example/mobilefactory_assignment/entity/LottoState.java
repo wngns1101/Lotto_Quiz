@@ -29,5 +29,4 @@ public class LottoState extends BaseEntity {
 
     @Column(name = "count_rank_4")
     private int countRank4;
-
 }

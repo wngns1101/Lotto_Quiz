@@ -28,6 +28,7 @@ public class ParticipantService {
     @Transactional
     public void createParticipate(String phoneNumber) {
         Long participantTotalCount = participantRepository.count();
+
         if (participantTotalCount >= MAX_PARTICIPANTS) {
             throw new IllegalArgumentException("참가자는 10,000명 이하로 제한됩니다.");
         }
@@ -69,7 +70,7 @@ public class ParticipantService {
     }
 
     @Transactional
-    public String getAnnouncement (String phoneNumber) {
+    public String getAnnouncement(String phoneNumber) {
         Participant participant = participantRepository.findByPhoneNumber(phoneNumber);
         if (participant == null) {
             throw new IllegalArgumentException("참여하지 않은 전화번호 입니다.");
@@ -100,20 +101,21 @@ public class ParticipantService {
         return participantList.stream().map(ParticipantDTO::toDTO).toList();
     }
 
+    // 복권 등수 추출 함수
     private int getRankForParticipant(Long participantTotalCount, LottoState lottoState, LottoStateCumulative lottoStateCumulative) {
-        if (participantTotalCount >= 4000 && participantTotalCount <= 6000 && lottoState.getCountRank2() > lottoStateCumulative.getCumulativeCountRank2() ) {
+        if (participantTotalCount >= 4000 && participantTotalCount <= 6000 && lottoState.getCountRank2() > lottoStateCumulative.getCumulativeCountRank2()) {
             return 2;
-        } else if (participantTotalCount >= 2000 && participantTotalCount <= 7000 && lottoState.getCountRank3() > lottoStateCumulative.getCumulativeCountRank3() ) {
+        } else if (participantTotalCount >= 2000 && participantTotalCount <= 7000 && lottoState.getCountRank3() > lottoStateCumulative.getCumulativeCountRank3()) {
             return 3;
-        } else if (participantTotalCount >= 1000 && participantTotalCount <= 8000 && lottoState.getCountRank4() > lottoStateCumulative.getCumulativeCountRank4() ) {
+        } else if (participantTotalCount >= 1000 && participantTotalCount <= 8000 && lottoState.getCountRank4() > lottoStateCumulative.getCumulativeCountRank4()) {
             return 4;
         } else {
             return 5;
         }
     }
 
+    // 복권 번호 추출 함수
     private String generateLottoNumberForRank(int rank, String firstPrizeLottoNumber) {
-        // 1등부터 4등까지에 대해 로또 번호 규칙 적용
         if (rank == 2) {
             return generateIdenticalLottoNumber(5, firstPrizeLottoNumber); // 5자리 동일
         } else if (rank == 3) {
@@ -125,13 +127,13 @@ public class ParticipantService {
         }
     }
 
+    // 등수별 복권 번호 생성 함수
     private String generateIdenticalLottoNumber(int matchingDigits, String firstPrizeLottoNumber) {
         Set<Integer> lottoNumbers = new HashSet<>();
-        String[] winningNumbers = firstPrizeLottoNumber.split("\\."); // .으로 나누기 위해 \\ 사용
+        String[] winningNumbers = firstPrizeLottoNumber.split("\\.");
         Set<Integer> matchedNumbers = new HashSet<>();
 
         for (int i = 0; i < matchingDigits; i++) {
-            // 숫자로 변환
             matchedNumbers.add(Integer.parseInt(winningNumbers[i]));
         }
 
@@ -151,7 +153,7 @@ public class ParticipantService {
         );
     }
 
-
+    // 복권 번호 생성 함수
     private String generateRandomLottoNumber() {
         Set<Integer> lottoNumbers = new HashSet<>();
         while (lottoNumbers.size() < 6) {
@@ -168,6 +170,7 @@ public class ParticipantService {
         );
     }
 
+    // 누적 복권 카운트 관련 함수
     private void updateCumulativeCount(int rank, LottoStateCumulative lottoStateCumulative) {
         if (rank == 2) {
             lottoStateCumulative.increaseCumulativeCountRank2();

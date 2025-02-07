@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface ParticipantRepository extends JpaRepository<Participant, Long> {
     Boolean existsByPhoneNumber(String phoneNumber);
+
     Participant findByPhoneNumber(String phoneNumber);
+
     List<Participant> findAllByIsCheckedIsFalse();
 }
