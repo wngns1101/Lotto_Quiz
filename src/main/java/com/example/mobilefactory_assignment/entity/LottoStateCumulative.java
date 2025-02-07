@@ -15,16 +15,16 @@ public class LottoStateCumulative {
     @Column(name = "lotto_state_id")
     private Long lottoStateId;
 
-    @Column(name = "cumulative_count_rank1")
+    @Column(name = "cumulative_count_rank_1")
     private int cumulativeCountRank1;
 
-    @Column(name = "cumulative_count_rank2")
+    @Column(name = "cumulative_count_rank_2")
     private int cumulativeCountRank2;
 
-    @Column(name = "cumulative_count_rank3")
+    @Column(name = "cumulative_count_rank_3")
     private int cumulativeCountRank3;
 
-    @Column(name = "cumulative_count_rank4")
+    @Column(name = "cumulative_count_rank_4")
     private int cumulativeCountRank4;
 
     public void increaseCumulativeCountRank1() {
